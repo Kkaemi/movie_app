@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import Movie from "./Movie";
+import "./App.css";
 
 class App extends React.Component {
   state = {
@@ -35,6 +36,8 @@ class App extends React.Component {
                 key={movie.id}
                 id={movie.id}
                 year={movie.year}
+                rating={movie.rating}
+                genres={movie.genres}
                 title={movie.title}
                 summary={movie.summary}
                 poster={movie.medium_cover_image}
