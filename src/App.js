@@ -1,27 +1,50 @@
 import React from "react";
+import axios from "axios";
+import Movie from "./Movie";
 
 class App extends React.Component {
   state = {
     isLoading: true,
+    movies: [],
+  };
+  getMovies = async () => {
+    const {
+      data: {
+        data: { movies },
+      },
+    } = await axios.get(
+      "https://yts-proxy.now.sh/list_movies.json?sort_by=rating"
+    );
+    this.setState({ movies, isLoading: false });
   };
   componentDidMount() {
-    setTimeout(() => {
-      this.setState({ isLoading: false });
-    }, 5000);
+    this.getMovies();
   }
   render() {
-    const { isLoading } = this.state;
-    return <div>{isLoading ? "Loading..." : "We are ready"}</div>;
+    const { isLoading, movies } = this.state;
+    return (
+      <section className="container">
+        {isLoading ? (
+          <div className="loader">
+            <span className="loader__text">Loading...</span>
+          </div>
+        ) : (
+          <div className="movies">
+            {movies.map((movie) => (
+              <Movie
+                key={movie.id}
+                id={movie.id}
+                year={movie.year}
+                title={movie.title}
+                summary={movie.summary}
+                poster={movie.medium_cover_image}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+    );
   }
 }
 
 export default App;
-
-/*
-  처음 App 클래스가 생성되면서 state 객체에 있는 isLoading 필드에
-  값이 true가 된다.
-  componentDidMount() 메소드가 실행되고 setTimeout() 메소드가 5초 후
-  자동으로 실행된다.
-  최초 render() 메소드가 실행되고 5초 후 실행되는 setTimeout() 메소드가 
-  setState 메소드를 실행하기 때문에 render() 메소드가 다시 실행된다.
-*/
